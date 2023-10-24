@@ -1,1 +1,2 @@
-"# WorldQuant" 
+## World of Quants
+
