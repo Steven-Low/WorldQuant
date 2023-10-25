@@ -38,7 +38,12 @@ while(True):
         skip.click()
         break
     except:
-        time.sleep(1)
+        try:
+            consultant = driver.find_element(By.XPATH,'/html/body/div[3]/div/i')
+            consultant.click()
+            break
+        except:
+            time.sleep(1)
 
  
 
