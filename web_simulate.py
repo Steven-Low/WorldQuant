@@ -78,6 +78,19 @@ def insert_alpha(line):
     keyboard = Controller()
     keyboard.type(line.strip()) 
 
+def click_settings():
+    setting =  driver.find_element(By.XPATH, '//button[text()="Settings"]')
+    setting.click()
+
+def click_apply():
+    apply = driver.find_element(By.CLASS_NAME, 'button--lg')
+    apply.click()
+
+def change_decay(n:int):
+    decay = driver.find_element(By.Name,'decay')
+    decay.clear()
+    decay.send_keys(n)
+
 # Use Class Name To Locate The Simulate Button & Click 
 def click_simulate():
     simulate = driver.find_element(By.CLASS_NAME, 'intro-step-5')  
@@ -122,7 +135,7 @@ def get_output_data():
 
 
 # Update and store the output of completed alphas
-def update_data(test,summary):
+def update_data(test,summary,i):
     
     # Process the raw "test" data and move to result dictionary 
     result = dict()
@@ -162,6 +175,9 @@ def main():
 
             click_add_simulation()
             insert_alpha(alpha)
+            click_settings()
+            change_decay(6)
+            click_apply()
             click_simulate()
 
             # When total simulations reach 3; Wait and scan for the results
@@ -169,7 +185,8 @@ def main():
                 for i in range(current_alpha,3+current_alpha):
                     click_simulator(i)
                     test,summary = get_output_data()
-                    update_data(test,summary)        
+                    update_data(test,summary,i)        
 
 
-            
+if __name__ == "__main__":
+    main()
