@@ -78,18 +78,36 @@ def insert_alpha(line):
     keyboard = Controller()
     keyboard.type(line.strip()) 
 
+# Click the settings of current Simulator
 def click_settings():
-    setting =  driver.find_element(By.XPATH, '//button[text()="Settings"]')
-    setting.click()
+    # setting = driver.find_element(By.CSS_SELECTOR, '.ui.button.editor-top-bar-left__settings-btn')
+    # settings = driver.find_element(By.CLASS_NAME,'intro-step-2')
+    settings = WebDriverWait(driver, 1).until(
+                EC.presence_of_all_elements_located((By.XPATH, "//button[contains(@class, 'ui button editor-top-bar-left__settings-btn')]"))
+            )
+    has_background_image = driver.execute_script(
+        'return window.getComputedStyle(arguments[0], "::before").getPropertyValue("background-image") !== "none";',
+        settings[1])
+    if (has_background_image):
+        settings[1].click()
 
-def click_apply():
-    apply = driver.find_element(By.CLASS_NAME, 'button--lg')
-    apply.click()
-
+# Change the decay value [should be applied after click_settings()]
 def change_decay(n:int):
-    decay = driver.find_element(By.Name,'decay')
-    decay.clear()
-    decay.send_keys(n)
+    try:
+        decay = driver.find_element(By.NAME,'decay')
+        decay.clear()
+        decay.send_keys(n)
+    except:
+        pass
+
+# Apply the settings [should be applied after click_settings()]
+def click_apply():
+    try:
+        apply = driver.find_element(By.CLASS_NAME, 'button--lg')
+        apply.click()
+    except:
+        pass
+
 
 # Use Class Name To Locate The Simulate Button & Click 
 def click_simulate():
@@ -168,6 +186,7 @@ def update_data(test,summary,i):
         backup.write(df.to_string())
 
 def main():
+    print("start...")
     current_alpha = 0 # position index
     with open("model_data.txt", "r", encoding="utf-8") as book:
         for alpha in book:
@@ -176,7 +195,7 @@ def main():
             click_add_simulation()
             insert_alpha(alpha)
             click_settings()
-            change_decay(6)
+            change_decay(6)  
             click_apply()
             click_simulate()
 
